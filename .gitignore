@@ -1,0 +1,20 @@
+venv
+
+*.log
+*.pyc
+*.pid
+*.DS_Store
+*.svn
+*.sqlite
+*.sqlite3
+*.orig
+*.mo
+.idea
+build
+dist
+__pycache__
+
+# Test / coverage reports
+.coverage
+.coverage.*
+htmlcov
