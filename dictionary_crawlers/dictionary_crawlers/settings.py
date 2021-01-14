@@ -51,8 +51,8 @@ ROBOTSTXT_OBEY = False
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 SPIDER_MIDDLEWARES = {
-    'dictionary_crawlers.middlewares.DictionaryCrawlersSpiderMiddleware': 543,
     'scrapy.spidermiddlewares.referer.RefererMiddleware': 100,
+    'dictionary_crawlers.middlewares.DictionaryCrawlersSpiderMiddleware': 543,
 }
 
 # Enable or disable downloader middlewares
@@ -70,7 +70,7 @@ DOWNLOADER_MIDDLEWARES = {
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'dictionary_crawlers.pipelines.': 100,
+    # 'dictionary_crawlers.pipelines.': 100,
     'dictionary_crawlers.pipelines.DictionaryCrawlersPipeline': 300,
 }
 
