@@ -11,5 +11,10 @@ class LongmanDictionarySpider(BaseSpider):
     base_url = 'https://www.ldoceonline.com/dictionary/'
     item_loader_xpath = {
         'family_word': "//div[@class='wordfams']//text()",
-        'header': "//span[contains(@class, 'Head')]",
+        'header': {
+            'parent': "//span[contains(@class, 'Head')]",
+            'children': {
+                'hwd':"//span[contains(@class, 'HWD')]"
+            }
+        },
     }

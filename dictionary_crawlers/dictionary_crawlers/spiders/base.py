@@ -54,15 +54,20 @@ class BaseSpider(scrapy.Spider):
         item_loader.default_input_processor = default_input_processor
         item_loader.default_output_processor = default_output_processor
 
-        logger.info("************************************** TEST **************************************")
-        logger.info("**********************************************************************************")
+        # logger.info("************************************** TEST **************************************")
+        # logger.info("**********************************************************************************")
         # for section in response.xpath("//span[contains(@class, 'Head')]").getall():
         #     logger.info(section.split())
-        logger.info("**********************************************************************************")
-        logger.info("**********************************************************************************")
+        # logger.info("**********************************************************************************")
+        # logger.info("**********************************************************************************")
 
         for field_name, xpath in self.item_loader_xpath.items():
-            item_loader.add_xpath(field_name=field_name, xpath=xpath)
+            if isinstance(xpath, dict):
+                nested_path = item_loader.nested_xpath(xpath.get('parent'))
+                for child_name, child_xpath in xpath.get('children').items():
+                    nested_path.add_xpath(field_name=child_name, xpath=child_xpath)
+            else:
+                item_loader.add_xpath(field_name=field_name, xpath=xpath)
 
         item_loader.add_value('word', response.request.url.split("/")[-1])
 

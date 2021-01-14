@@ -6,7 +6,7 @@ import re
 from collections import defaultdict
 from logging import getLogger
 
-from scrapy.loader.processors import TakeFirst
+from itemloaders.processors import TakeFirst
 
 logger = getLogger(__name__)
 
@@ -22,6 +22,7 @@ default_output_processor = TakeFirst()
 
 
 class FamilyWordProcessor:
+
     def __call__(self, iterable, **kwargs):
         """
         :param iterable: xpath query result
@@ -39,6 +40,7 @@ class FamilyWordProcessor:
 
             if iterable_item:
                 part_of_speech = re.search(r'\((.*?)\)', iterable_item)
+
                 if part_of_speech:
                     try:
                         current_pos = part_of_speech.group(1)
@@ -60,8 +62,28 @@ class HeaderProcessor:
         :return:
         """
 
-        logger.info("------------------------------ HeaderProcessor ------------------------------")
-        logger.info("-----------------------------------------------------------------------------")
-        logger.info(iterable)
-        logger.info("-----------------------------------------------------------------------------")
-        logger.info("-----------------------------------------------------------------------------")
+        headers = defaultdict(dict)
+
+        # current part of speech
+        current_pos = None
+        logger.debug("######################################################")
+        for item in iterable:
+            item.xpath("//span[contains(@class, 'HWD')]//text()")
+            # logger.info(f"item: {item}")
+            logger.info("-------------------------------------------------------------")
+            # iterable_item = item.strip() if isinstance(item, str) else None
+            #
+            # if iterable_item:
+            #     part_of_speech = re.search(r'\((.*?)\)', iterable_item)
+            #     if part_of_speech:
+            #         try:
+            #             current_pos = part_of_speech.group(1)
+            #         except Exception as exc:
+            #             logger.exception(exc)
+            #
+            #     elif current_pos:
+            #         headers[current_pos].append(iterable_item)
+
+        logger.debug("######################################################")
+
+        return dict(headers)
