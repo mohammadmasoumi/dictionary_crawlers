@@ -75,7 +75,6 @@ class HeaderProcessor:
 
         logger.debug("######################################################")
         for item in iterable:
-            # logger.info(item)
             iterable_item = item.strip() if isinstance(item, str) else None
 
             if iterable_item:
