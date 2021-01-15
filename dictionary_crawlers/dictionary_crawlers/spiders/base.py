@@ -62,12 +62,7 @@ class BaseSpider(scrapy.Spider):
         # logger.info("**********************************************************************************")
 
         for field_name, xpath in self.item_loader_xpath.items():
-            if isinstance(xpath, dict):
-                nested_path = item_loader.nested_xpath(xpath.get('parent'))
-                for child_name, child_xpath in xpath.get('children').items():
-                    nested_path.add_xpath(field_name=child_name, xpath=child_xpath)
-            else:
-                item_loader.add_xpath(field_name=field_name, xpath=xpath)
+            item_loader.add_xpath(field_name=field_name, xpath=xpath)
 
         item_loader.add_value('word', response.request.url.split("/")[-1])
 
