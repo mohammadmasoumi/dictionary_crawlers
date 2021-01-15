@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # vim: ts=4: sw=4: et
 
-from dictionary_crawlers.dictionary_crawlers.items import LongManItem
+from ..items import LongManItem
 from .base import BaseSpider
 
 
@@ -13,5 +13,7 @@ class LongmanDictionarySpider(BaseSpider):
     item_loader_cls = LongManItem()
     item_loader_xpath = {
         'family_word': "//div[@class='wordfams']//text()",
-        'header': "//span[contains(@class, 'Head')]",
+        'ldocs': "//span[@class='ldoceEntry Entry']",
+        # 'header': "//span[contains(@class, 'Head')]",
+        # 'british_': "//span[@class='speaker brefile fas fa-volume-up hideOnAmp']/@data-src-mp3"
     }

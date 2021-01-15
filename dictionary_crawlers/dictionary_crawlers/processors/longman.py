@@ -53,12 +53,12 @@ class LongManHeaderProcessor:
         "hyphenation": "<span class=\"HYPHENATION\">(?:\s)*([^<}]+)</span>",
         "homnum": "<span class=\"HOMNUM\">(?:\s)*([^<}]+)</span>",
         "pos": "<span class=\"POS\">(?:\s)*([^<}]+)</span>",
+        "british_pron": "<span data-src-mp3=\"(?:\s)*([^<}]+)\" class=\"speaker brefile fas fa-volume-up hideOnAmp\"",
+        "american_pron": "<span data-src-mp3=\"(?:\s)*([^<}]+)\" class=\"speaker amefile fas fa-volume-up hideOnAmp\"",
     }  # NOQA
 
     def __call__(self, iterable, **kwargs):
         """
-        r"\{\{(?:\s)*([^|}]+)(?:\s)*\|(?:\s)*([^|}]+)(?:\s)*\}\}"
-        "\{{\{{(?:\s)*{tag_key}(?:\s)*\|(?:\s)*([^|}}]+)(?:\s)*\}}\}}"
         :param iterable: xpath query result
         :param kwargs: scrapy context
         :return:
@@ -71,6 +71,9 @@ class LongManHeaderProcessor:
             iterable_item = item.strip() if isinstance(item, str) else None
 
             if iterable_item:
+                logger.info("------------------------------------->>>>>>>>>>>>>>>>>>>>>>>>>")
+                # logger.info(iterable_item)
+
                 for key, pattern in self._KEY_PATTERN_MAPPING.items():
                     re_object = re.compile(pattern, re.IGNORECASE)
                     values = re.findall(re_object, iterable_item)

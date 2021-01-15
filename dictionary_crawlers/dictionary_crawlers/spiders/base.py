@@ -7,7 +7,7 @@ import logging
 import scrapy
 from scrapy.loader import ItemLoader
 
-from dictionary_crawlers.dictionary_crawlers.processors import default_input_processor, default_output_processor
+from ..processors import default_input_processor, default_output_processor
 
 logger = logging.getLogger(__name__)
 
