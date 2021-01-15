@@ -16,6 +16,8 @@ __all__ = (
     'LongManHeaderProcessor'
 )
 
+LONGMAN_SITE_URL = "https://www.ldoceonline.com"
+
 
 class LongManFamilyWordProcessor:
 
@@ -50,15 +52,6 @@ class LongManFamilyWordProcessor:
 
 
 class LongManHeaderProcessor:
-    # _HEADER_MAPPING = {
-    #     "hwd": "<span class=\"HWD\">(?:\s)*([^<}]+)</span>",
-    #     "hyphenation": "<span class=\"HYPHENATION\">(?:\s)*([^<}]+)</span>",
-    #     "homnum": "<span class=\"HOMNUM\">(?:\s)*([^<}]+)</span>",
-    #     "pos": "<span class=\"POS\">(?:\s)*([^<}]+)</span>",
-    #     "british_pron": "<span data-src-mp3=\"(?:\s)*([^<}]+)\" class=\"speaker brefile fas fa-volume-up hideOnAmp\"",
-    #     "american_pron": "<span data-src-mp3=\"(?:\s)*([^<}]+)\" class=\"speaker amefile fas fa-volume-up hideOnAmp\"",
-    # }  # NOQA
-
     _HEADER_XPATH_MAPPING = {
         'hwd': "//span[@class='HWD']//text()",
         'hyphenation': "//span[@class='HYPHENATION']//text()",
@@ -69,14 +62,23 @@ class LongManHeaderProcessor:
     }
 
     @staticmethod
-    def _filter_definition(defs: list):
+    def _filter_definition(defs: list, strip=True):
         """
 
         :param defs:
         :return:
         """
+        word = ''.join(filter(lambda x: not x.startswith('\\'), defs))
+        return word.strip() if strip else word
 
-        return ''.join(filter(lambda x: not x.startswith('\\'), defs))
+    @staticmethod
+    def _ref_link(href: list):
+        """
+
+        :param href:
+        :return:
+        """
+        return ''.join([LONGMAN_SITE_URL, *href])
 
     def __call__(self, iterable, **kwargs):
         """
@@ -106,27 +108,60 @@ class LongManHeaderProcessor:
                 # definition
                 for sense in html.xpath("//span[@class='Sense']"):
                     # logger.debug(etree.tostring(sense))
-                    logger.debug("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
-                    sense_num = sense.xpath("span[1]//text()")
-                    sign_post = sense.xpath("span[@class='SIGNPOST']//text()")
-                    gram = sense.xpath("span[@class='GRAM']//text()")
+                    logger.debug("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
+                    sense_num = self._filter_definition(sense.xpath("span[1]//text()"))
+                    sign_post = self._filter_definition(sense.xpath("span[@class='SIGNPOST']//text()"))
+                    gram = self._filter_definition(sense.xpath("span[@class='GRAM']//text()"))
 
                     logger.debug(f"sense_num: {sense_num}")
                     logger.debug(f"sign_post: {sign_post}")
                     logger.debug(f"gram: {gram}")
 
-                    for sub_sense in sense.xpath("//span[@class='Subsense']"):
-                        sub_sense_num = sub_sense.xpath("span[1]//text()")
-                        active = sub_sense.xpath("span[@class='ACTIV']//text()")
+                    # cross refs
+                    for cross_ref in sense.xpath("span[@class='Crossref']//a"):
+                        cross_ref_title = self._filter_definition(cross_ref.xpath("@title"))
+                        cross_ref_link = self._ref_link(cross_ref.xpath("@href"))
+
+                        logger.debug(f"cross_ref_title: {cross_ref_title}")
+                        logger.debug(f"cross_ref_link: {cross_ref_link}")
+
+                    for example in sense.xpath("span[@class='EXAMPLE']"):
+                        example_text = self._filter_definition(example.xpath("text()"))
+                        example_audio = example.xpath("span[1]//@data-src-mp3")
+
+                        logger.debug(f"example_text: {example_text}")
+                        logger.debug(f"example_audio: {example_audio}")
+
+                    for collocation_example in sense.xpath("span[@class='ColloExa']"):
+                        collocation_text = self._filter_definition(collocation_example.xpath("span[1]//text()"))
+                        collocation_audio = collocation_example.xpath("span[2]//@data-src-mp3")
+
+                        logger.debug(f"collocation_text: {collocation_text}")
+                        logger.debug(f"collocation_audio: {collocation_audio}")
+
+                    for grammar_example in sense.xpath("span[@class='GramExa']"):
+                        grammar_text = self._filter_definition(grammar_example.xpath("span[1]//text()"))
+                        grammar_audio = grammar_example.xpath("span[2]//@data-src-mp3")
+
+                        logger.debug(f"grammar_text: {grammar_text}")
+                        logger.debug(f"grammar_audio: {grammar_audio}")
+
+                    for sub_sense in sense.xpath("span[@class='Subsense']"):
+                        sub_sense_num = self._filter_definition(sub_sense.xpath("span[1]//text()"))
+                        active = self._filter_definition(sub_sense.xpath("span[@class='ACTIV']//text()"))
+                        geo = self._filter_definition(sub_sense.xpath("span[@class='GEO']//text()"))
+                        syn = self._filter_definition(sub_sense.xpath("span[@class='SYN']//text()"))
                         main_definition = self._filter_definition(sub_sense.xpath("span[@class='DEF']//text()"))
 
                         logger.debug(f"sub_sense_num: {sub_sense_num}")
                         logger.debug(f"active: {active}")
+                        logger.debug(f"geo: {geo}")
                         logger.debug(f"main_definition: {main_definition}")
+                        logger.debug(f"syn: {syn}")
 
                         for example in sub_sense.xpath("span[@class='EXAMPLE']"):
                             example_text = self._filter_definition(example.xpath("text()"))
-                            example_audio = example.xpath("@data-src-mp3")
+                            example_audio = example.xpath("span[1]//@data-src-mp3")
 
                             logger.debug(f"example_text: {example_text}")
                             logger.debug(f"example_audio: {example_audio}")
@@ -137,8 +172,6 @@ class LongManHeaderProcessor:
 
                             logger.debug(f"collocation_text: {collocation_text}")
                             logger.debug(f"collocation_audio: {collocation_audio}")
-
-                    logger.debug("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
 
         logger.debug("######################################################")
         return dict(definitions)
