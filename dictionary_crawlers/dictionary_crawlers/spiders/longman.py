@@ -14,6 +14,4 @@ class LongmanDictionarySpider(BaseSpider):
     item_loader_xpath = {
         'family_word': "//div[@class='wordfams']//text()",
         'ldocs': "//span[@class='ldoceEntry Entry']",
-        # 'header': "//span[contains(@class, 'Head')]",
-        # 'british_': "//span[@class='speaker brefile fas fa-volume-up hideOnAmp']/@data-src-mp3"
     }

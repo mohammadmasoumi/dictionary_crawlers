@@ -17,8 +17,6 @@ class LongManItem(scrapy.Item):
     # define the fields for your item here like:
 
     word = scrapy.Field()
-    # files = scrapy.Field()
-    # file_urls = scrapy.Field()
     family_word = scrapy.Field(
         input_processor=processors.LongManFamilyWordProcessor()
     )

@@ -1,6 +1,0 @@
-{
-  "hwd": "<span class=\\\"HWD\\\">(?:\\s)*([^<}]+)</span>",
-  "hyphenation": "<span class=\\\"HYPHENATION\\\">(?:\\s)*([^<}]+)</span>",
-  "homnum": "<span class=\\\"HOMNUM\\\">(?:\\s)*([^<}]+)</span>",
-  "pos": "<span class=\\\"POS\\\">(?:\\s)*([^<}]+)</span>"
-}
