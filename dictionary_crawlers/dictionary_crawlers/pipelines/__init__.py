@@ -3,3 +3,4 @@
 # vim: ts=4: sw=4: et
 
 from .base import *  # NOQA
+from .file import *  # NOQA

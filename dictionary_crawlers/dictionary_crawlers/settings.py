@@ -25,6 +25,8 @@ NEWSPIDER_MODULE = 'dictionary_crawlers.spiders'
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
 
+MEDIA_ALLOW_REDIRECTS = True
+
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 # CONCURRENT_REQUESTS = 32
 
@@ -70,8 +72,8 @@ DOWNLOADER_MIDDLEWARES = {
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    # 'dictionary_crawlers.pipelines.': 100,
-    'dictionary_crawlers.pipelines.DictionaryCrawlersPipeline': 300,
+    'dictionary_crawlers.pipelines.DictionaryCrawlersPipeline': 100,
+    'dictionary_crawlers.pipelines.DictionaryFilePipeline': 200,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

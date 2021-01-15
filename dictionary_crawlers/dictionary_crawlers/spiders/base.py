@@ -2,20 +2,20 @@
 # -*- coding: utf-8 -*-
 # vim: ts=4: sw=4: et
 
-from logging import getLogger
+import logging
 
 import scrapy
 from scrapy.loader import ItemLoader
 
-from ..items import DictionaryCrawlersItem
-from ..processors import default_input_processor, default_output_processor
+from dictionary_crawlers.dictionary_crawlers.processors import default_input_processor, default_output_processor
 
-logger = getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class BaseSpider(scrapy.Spider):
     name = None
     base_url = None
+    item_loader_cls = None
     item_loader_xpath = None
 
     def __init__(self, **kwargs):
@@ -50,7 +50,7 @@ class BaseSpider(scrapy.Spider):
         :param kwargs:
         :return:
         """
-        item_loader = ItemLoader(item=DictionaryCrawlersItem(), response=response, spider_name=self.name)
+        item_loader = ItemLoader(item=self.item_loader_cls, response=response, spider_name=self.name)
         item_loader.default_input_processor = default_input_processor
         item_loader.default_output_processor = default_output_processor
 
