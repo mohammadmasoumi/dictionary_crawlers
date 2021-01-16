@@ -21,11 +21,6 @@ class DictionaryCrawlersPipeline:
         :param spider:
         :return:
         """
-        # logger.debug("******************* PIPELINE *******************")
-        # logger.debug("************************************************")
-        # for key, value in item.items():
-        #     logger.debug(f"key: {key}, value {value}")
-        # logger.debug("************************************************")
-        # logger.debug("************************************************")
+
 
         return item
