@@ -7,6 +7,7 @@ import logging
 import re
 from collections import defaultdict
 
+from ..services import LongManDefinitionService
 
 logger = logging.getLogger(__name__)
 
@@ -57,5 +58,4 @@ class LongManHeaderProcessor:
         :return:
         """
 
-        return iterable
-
+        return LongManDefinitionService(items=iterable).process()

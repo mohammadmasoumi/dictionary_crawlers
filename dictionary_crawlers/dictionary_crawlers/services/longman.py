@@ -104,6 +104,20 @@ class LongManDefinitionService(BaseService):
             'gram': self._join(tree.xpath("span[@class='GRAM']//text()")),
         }
 
+    def _process_sub_sense(self, tree):
+        """
+
+        :param tree:
+        :return:
+        """
+        return {
+            'sub_sense_num': self._join(tree.xpath("span[1]//text()")),
+            'active': self._join(tree.xpath("span[@class='ACTIV']//text()")),
+            'geo': self._join(tree.xpath("span[@class='GEO']//text()")),
+            'syn': self._join(tree.xpath("span[@class='SYN']//text()")),
+            'main_definition': self._join(tree.xpath("span[@class='DEF']//text()")),
+        }
+
     def process(self):
         definitions = {}
 
@@ -115,40 +129,37 @@ class LongManDefinitionService(BaseService):
                 html = etree.HTML(iterable_item)
 
                 headers = self._process_header(html)
+                refs = self._process_refs(tree=html)
+                examples = self._process_example(tree=html)
+                collocation_examples = self._process_collocation_example(tree=html)
+                grammar_examples = self._process_grammar_example(tree=html)
+
+                logger.debug(f"headers: {headers}")
+                logger.debug(f"refs: {refs}")
+                logger.debug(f"examples: {examples}")
+                logger.debug(f"collocation_examples: {collocation_examples}")
+                logger.debug(f"grammar_examples: {grammar_examples}")
 
                 # definition
                 for sense in html.xpath("//span[@class='Sense']"):
-                    # logger.debug(etree.tostring(sense))
                     logger.debug("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
+                    process_sense = self._process_sense(tree=sense)
 
-
-                    # cross refs
+                    logger.debug(f"process_sense: {process_sense}")
 
                     for sub_sense in sense.xpath("span[@class='Subsense']"):
-                        sub_sense_num = self._join(sub_sense.xpath("span[1]//text()"))
-                        active = self._join(sub_sense.xpath("span[@class='ACTIV']//text()"))
-                        geo = self._join(sub_sense.xpath("span[@class='GEO']//text()"))
-                        syn = self._join(sub_sense.xpath("span[@class='SYN']//text()"))
-                        main_definition = self._join(sub_sense.xpath("span[@class='DEF']//text()"))
+                        process_sub_sense = self._process_sub_sense(tree=sub_sense)
+                        sub_refs = self._process_refs(tree=html)
+                        sub_examples = self._process_example(tree=html)
+                        sub_collocation_examples = self._process_collocation_example(tree=html)
+                        sub_grammar_examples = self._process_grammar_example(tree=html)
 
-                    logger.debug(f"sub_sense_num: {sub_sense_num}")
-                    logger.debug(f"active: {active}")
-                    logger.debug(f"geo: {geo}")
-                    logger.debug(f"main_definition: {main_definition}")
-                    logger.debug(f"syn: {syn}")
+                        logger.debug(f"process_sub_senseL {process_sub_sense}")
+                        logger.debug(f"sub_refsL {sub_refs}")
+                        logger.debug(f"sub_examplesL {sub_examples}")
+                        logger.debug(f"sub_collocation_examplesL {sub_collocation_examples}")
+                        logger.debug(f"sub_grammar_examplesL {sub_grammar_examples}")
 
-                    for example in sub_sense.xpath("span[@class='EXAMPLE']"):
-                        example_text = self._join(example.xpath("text()"))
-                    example_audio = example.xpath("span[1]//@data-src-mp3")
+                    logger.debug("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
 
-                    logger.debug(f"example_text: {example_text}")
-                    logger.debug(f"example_audio: {example_audio}")
-
-                    for collocation_example in sub_sense.xpath("span[@class='ColloExa']"):
-                        collocation_text = self._join(collocation_example.xpath("span[1]//text()"))
-                    collocation_audio = collocation_example.xpath("span[2]//@data-src-mp3")
-
-                    logger.debug(f"collocation_text: {collocation_text}")
-                    logger.debug(f"collocation_audio: {collocation_audio}")
-
-                    logger.debug("######################################################")
+        return definitions
