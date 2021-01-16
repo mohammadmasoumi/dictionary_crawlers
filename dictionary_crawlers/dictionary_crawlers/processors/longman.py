@@ -16,8 +16,6 @@ __all__ = (
     'LongManHeaderProcessor'
 )
 
-LONGMAN_SITE_URL = "https://www.ldoceonline.com"
-
 
 class LongManFamilyWordProcessor:
 
@@ -52,33 +50,6 @@ class LongManFamilyWordProcessor:
 
 
 class LongManHeaderProcessor:
-    _HEADER_XPATH_MAPPING = {
-        'hwd': "//span[@class='HWD']//text()",
-        'hyphenation': "//span[@class='HYPHENATION']//text()",
-        'homnum': "//span[@class='HOMNUM']//text()",
-        'pos': "//span[@class='POS']//text()",
-        'british_pron': "//span[contains(@class, 'brefile')]/@data-src-mp3",
-        'american_pron': "//span[contains(@class, 'amefile')]/@data-src-mp3",
-    }
-
-    @staticmethod
-    def _filter_definition(defs: list, strip=True):
-        """
-
-        :param defs:
-        :return:
-        """
-        word = ''.join(filter(lambda x: not x.startswith('\\'), defs))
-        return word.strip() if strip else word
-
-    @staticmethod
-    def _ref_link(href: list):
-        """
-
-        :param href:
-        :return:
-        """
-        return ''.join([LONGMAN_SITE_URL, *href])
 
     def __call__(self, iterable, **kwargs):
         """
