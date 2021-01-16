@@ -1,0 +1,235 @@
+{
+  "1": {
+    "hwd": "market",
+    "hyphenation": "mar\u2027ket",
+    "homnum": "1",
+    "pos": " noun",
+    "british_pron": "https:\/\/www.ldoceonline.com\/media\/english\/breProns\/brelasdemarket.mp3?version=1.2.14",
+    "american_pron": "https:\/\/www.ldoceonline.com\/media\/english\/ameProns\/market1.mp3?version=1.2.14",
+    "senses": [
+      {
+        "sense_num": "1",
+        "sign_post": "place to buy things",
+        "gram": "[countable]",
+        "def": "",
+        "field": "",
+        "active": "",
+        "sub_senses": [
+          {
+            "sub_sense_num": "a)",
+            "active": "SHOP\/STORE",
+            "geo": "",
+            "syn": "",
+            "main_definition": "a time when people buy and sell goods, food etc, or the place, usually outside or in a large building, where this happens",
+            "sub_examples": [
+              {
+                "example": "I usually buy all my vegetables at the market.",
+                "audio": "https:\/\/www.ldoceonline.com\/media\/english\/exaProns\/p008-000186394.mp3?version=1.2.14"
+              }
+            ],
+            "sub_collocation_examples": [
+              {
+                "example": "fish\/fruit and vegetable\/flower etc market",
+                "audio": "https:\/\/www.ldoceonline.com\/media\/english\/exaProns\/p008-000186393.mp3?version=1.2.14"
+              },
+              {
+                "example": "street market",
+                "audio": null
+              }
+            ]
+          },
+          {
+            "sub_sense_num": "b)",
+            "active": "SHOP\/STORE",
+            "geo": "American English",
+            "syn": "grocery store",
+            "main_definition": "a shop that sells food and things for the home"
+          }
+        ]
+      },
+      {
+        "sense_num": "2",
+        "sign_post": "",
+        "gram": "",
+        "def": "",
+        "field": "",
+        "active": "",
+        "sense_refs": [
+          {
+            "example": "the market",
+            "link": "https:\/\/www.ldoceonline.com\/dictionary\/the-market"
+          }
+        ],
+        "sub_senses": []
+      },
+      {
+        "sense_num": "3",
+        "sign_post": "",
+        "gram": "",
+        "def": "",
+        "field": "",
+        "active": "",
+        "sense_refs": [
+          {
+            "example": "on the market",
+            "link": "https:\/\/www.ldoceonline.com\/dictionary\/on-the-market"
+          }
+        ],
+        "sub_senses": []
+      },
+      {
+        "sense_num": "4",
+        "sign_post": "country\/area",
+        "gram": "[countable]",
+        "def": "a particular country or area where a company sells its goods or where a particular type of goods is sold",
+        "field": "BBT",
+        "active": "",
+        "sense_examples": [
+          {
+            "example": "Our main overseas market is Japan.",
+            "audio": "https:\/\/www.ldoceonline.com\/media\/english\/exaProns\/p008-000186455.mp3?version=1.2.14"
+          }
+        ],
+        "sense_collocation_examples": [
+          {
+            "example": "international\/home\/UK etc market",
+            "audio": "https:\/\/www.ldoceonline.com\/media\/english\/exaProns\/p008-001571911.mp3?version=1.2.14"
+          }
+        ],
+        "sense_grammar_examples": [
+          {
+            "example": "market for",
+            "audio": "https:\/\/www.ldoceonline.com\/media\/english\/exaProns\/p008-000186459.mp3?version=1.2.14",
+            "text": "The world\u2019s largest market for illegal drugs is the US."
+          }
+        ],
+        "sub_senses": []
+      },
+      {
+        "sense_num": "5",
+        "sign_post": "people who buy",
+        "gram": "[singular]",
+        "def": "the number of people who want to buy something, or the type of people who want to buy it",
+        "field": "BBT",
+        "active": "BUY",
+        "sense_examples": [
+          {
+            "example": "for his invention?",
+            "audio": "https:\/\/www.ldoceonline.com\/media\/english\/exaProns\/p008-001571912.mp3?version=1.2.14"
+          }
+        ],
+        "sense_collocation_examples": [
+          {
+            "example": "niche\/specialist market",
+            "audio": null
+          }
+        ],
+        "sense_grammar_examples": [
+          {
+            "example": "market for",
+            "audio": "https:\/\/www.ldoceonline.com\/media\/english\/exaProns\/p008-000186468.mp3?version=1.2.14",
+            "text": "The market for specialist academic books is pretty small."
+          }
+        ],
+        "sub_senses": []
+      },
+      {
+        "sense_num": "6",
+        "sign_post": "",
+        "gram": "",
+        "def": "",
+        "field": "",
+        "active": "",
+        "sense_refs": [
+          {
+            "example": "be in the market for something",
+            "link": "https:\/\/www.ldoceonline.com\/dictionary\/be-in-the-market-for-something"
+          }
+        ],
+        "sub_senses": []
+      },
+      {
+        "sense_num": "7",
+        "sign_post": "",
+        "gram": "",
+        "def": "",
+        "field": "",
+        "active": "",
+        "sense_refs": [
+          {
+            "example": "the job\/labour market",
+            "link": "https:\/\/www.ldoceonline.com\/dictionary\/the-job-labour-market"
+          }
+        ],
+        "sub_senses": []
+      },
+      {
+        "sense_num": "8",
+        "sign_post": "",
+        "gram": "",
+        "def": "",
+        "field": "",
+        "active": "",
+        "sense_refs": [
+          {
+            "example": "a buyer\u2019s\/seller\u2019s market",
+            "link": "https:\/\/www.ldoceonline.com\/dictionary\/a-buyer-s-seller-s-market"
+          }
+        ],
+        "sub_senses": []
+      }
+    ]
+  },
+  "2": {
+    "hwd": "market",
+    "hyphenation": "market",
+    "homnum": "2",
+    "pos": " verb",
+    "british_pron": "https:\/\/www.ldoceonline.com\/media\/english\/breProns\/brelasdemarket.mp3?version=1.2.14",
+    "american_pron": "https:\/\/www.ldoceonline.com\/media\/english\/ameProns\/market1.mp3?version=1.2.14",
+    "senses": [
+      {
+        "sense_num": "1",
+        "sign_post": "",
+        "gram": "",
+        "def": "to try to persuade people to buy a product by advertising it in a particular way, using attractive packages etc",
+        "field": "",
+        "active": "ADVERTISE",
+        "sense_examples": [
+          {
+            "example": "If you could ever figure out how to market this, you\u2019d make a fortune.",
+            "audio": "https:\/\/www.ldoceonline.com\/media\/english\/exaProns\/p008-001571919.mp3?version=1.2.14"
+          }
+        ],
+        "sense_grammar_examples": [
+          {
+            "example": "market something for somebody",
+            "audio": "https:\/\/www.ldoceonline.com\/media\/english\/exaProns\/p008-001571922.mp3?version=1.2.14",
+            "text": "They plan to market the toy for children aged 2 to 6."
+          },
+          {
+            "example": "market something as something",
+            "audio": "https:\/\/www.ldoceonline.com\/media\/english\/exaProns\/p008-001571925.mp3?version=1.2.14",
+            "text": "Electric cars are being marketed as safe for the environment."
+          }
+        ],
+        "sub_senses": []
+      },
+      {
+        "sense_num": "2",
+        "sign_post": "",
+        "gram": "",
+        "def": "to make a product available in shops",
+        "field": "",
+        "active": "SELL",
+        "sense_examples": [
+          {
+            "example": "The turkeys are marketed ready-to-cook.",
+            "audio": "https:\/\/www.ldoceonline.com\/media\/english\/exaProns\/p008-000186519.mp3?version=1.2.14"
+          }
+        ],
+        "sub_senses": []
+      }
+    ]
+  }
+}
