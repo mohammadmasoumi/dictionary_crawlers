@@ -1,6 +1,5 @@
 import logging
 
-import ujson
 from lxml import etree
 
 from .base import BaseService
@@ -34,9 +33,6 @@ class LongManCorpusService(BaseService):
                     examples.append(example[1:].strip())
 
                 definitions[title] = examples
-
-        with open('corpus.json', '+w') as file:
-            file.write(ujson.dumps(definitions))
 
         return definitions
 
@@ -216,8 +212,5 @@ class LongManDefinitionService(BaseService):
                         senses.append(process_sense)
                     headers['senses'] = senses
                     definitions[headers['homnum']] = headers
-
-        with open('ldoc.json', '+w') as file:
-            file.write(ujson.dumps(definitions))
 
         return definitions
