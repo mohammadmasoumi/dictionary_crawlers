@@ -2,7 +2,7 @@ import logging
 
 from lxml import etree
 
-from .base import BaseService
+from .base import ProcessMixin
 
 logger = logging.getLogger(__name__)
 
@@ -11,8 +11,8 @@ LONGMAN_SITE_URL = "https://www.ldoceonline.com"
 __all__ = ('LongManDefinitionService',)
 
 
-class LongManDefinitionService(BaseService):
-    _HEADER_XPATH_MAPPING = {
+class ProcessHeader(ProcessMixin):
+    __XPATH_MAPPING__ = {
         'hwd': "//span[@class='HWD']//text()",
         'hyphenation': "//span[@class='HYPHENATION']//text()",
         'homnum': "//span[@class='HOMNUM']//text()",
@@ -21,11 +21,7 @@ class LongManDefinitionService(BaseService):
         'american_pron': "//span[contains(@class, 'amefile')]/@data-src-mp3",
     }
 
-    def __init__(self, items):
-
-        super(LongManDefinitionService, self).__init__(items)
-
-    def _process_header(self, tree):
+    def __call__(self, root, *args, **kwargs):
         """
 
         :param tree:
@@ -33,25 +29,58 @@ class LongManDefinitionService(BaseService):
         """
 
         header = {}
-        for key, xpath in self._HEADER_XPATH_MAPPING.items():
-            value = tree.xpath(xpath)
+        for key, xpath in self.__XPATH_MAPPING__.items():
+            value = root.xpath(xpath)
             header.update({key: self._first(value)}) if value else None
-
         return header
 
-    def _process_example(self, tree):
+
+class ProcessExample(ProcessMixin):
+    __XPATH__ = "span[@class='EXAMPLE']"
+
+    def __call__(self, root, *args, **kwargs):
         """
 
-        :param tree:
+        :param root:
+        :param args:
+        :param kwargs:
         :return:
         """
+
         items = []
-        for example in tree.xpath("span[@class='EXAMPLE']"):
+        for example in root.xpath():
             items.append({
                 'example': self._join(example.xpath("text()")),
                 'audio': self._first(example.xpath("span[1]//@data-src-mp3"))
             })
         return items
+
+
+class ProcessRef(ProcessMixin):
+    __XPATH__ = "span[@class='Crossref']/a"
+
+    def __call__(self, root, *args, **kwargs):
+        """
+
+        :param root:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        items = []
+        for cross_ref in root.xpath(self.__XPATH__):
+            items.append({
+                'example': self._join(cross_ref.xpath("@title")),
+                'link': self._join_url(LONGMAN_SITE_URL, cross_ref.xpath("@href"))
+            })
+        return items
+
+
+class LongManDefinitionService(ProcessMixin):
+
+    def __init__(self, items):
+
+        super(LongManDefinitionService, self).__init__(items)
 
     def _process_grammar_example(self, tree):
         """
@@ -79,20 +108,6 @@ class LongManDefinitionService(BaseService):
             items.append({
                 'example': self._join(collocation_example.xpath("span[1]//text()")),
                 'audio': self._first(collocation_example.xpath("span[2]//@data-src-mp3"))
-            })
-        return items
-
-    def _process_refs(self, tree):
-        """
-
-        :param tree:
-        :return:
-        """
-        items = []
-        for cross_ref in tree.xpath("span[@class='Crossref']/a"):
-            items.append({
-                'example': self._join(cross_ref.xpath("@title")),
-                'link': self._join_url(LONGMAN_SITE_URL, cross_ref.xpath("@href"))
             })
         return items
 
@@ -125,6 +140,26 @@ class LongManDefinitionService(BaseService):
             'main_definition': self._join(tree.xpath("span[@class='DEF']//text()")),
         }
 
+    def __extract_definition__(self, root):
+        """
+
+        :param root:
+        :return:
+        """
+        definition = {}
+
+        refs = self._process_refs(tree=root)
+        examples = self._process_example(tree=root)
+        collocation_examples = self._process_collocation_example(tree=root)
+        grammar_examples = self._process_grammar_example(tree=root)
+
+        definition.update({'refs': refs}) if refs else None
+        definition.update({'examples': examples}) if examples else None
+        definition.update({'collocation_examples': collocation_examples}) if collocation_examples else None
+        definition.update({'grammar_examples': grammar_examples}) if grammar_examples else None
+
+        return
+
     def process(self):
         definitions = {}
 
@@ -138,15 +173,6 @@ class LongManDefinitionService(BaseService):
                     headers = self._process_header(html)
 
                     if headers:
-                        refs = self._process_refs(tree=html)
-                        examples = self._process_example(tree=html)
-                        collocation_examples = self._process_collocation_example(tree=html)
-                        grammar_examples = self._process_grammar_example(tree=html)
-
-                        headers.update({'refs': refs}) if refs else None
-                        headers.update({'examples': examples}) if examples else None
-                        headers.update({'collocation_examples': collocation_examples}) if collocation_examples else None
-                        headers.update({'grammar_examples': grammar_examples}) if grammar_examples else None
 
                         # definition
                         senses = []

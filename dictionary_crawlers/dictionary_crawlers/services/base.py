@@ -1,9 +1,7 @@
-from abc import abstractmethod
-
-__all__ = ('BaseService',)
+__all__ = ('ProcessMixin',)
 
 
-class BaseService:
+class ProcessMixin:
 
     def __init__(self, items):
         self._items = items
@@ -36,11 +34,3 @@ class BaseService:
         :return:
         """
         return ''.join([base_url, *href])
-
-    @abstractmethod
-    def process(self):
-        """
-
-        :return:
-        """
-        pass

@@ -13,5 +13,5 @@ class LongmanDictionarySpider(BaseSpider):
     item_loader_cls = LongManItem()
     item_loader_xpath = {
         'family_word': "//div[@class='wordfams']//text()",
-        'ldocs': "//span[@class='dictentry']"
+        'definition': "//span[@class='dictentry']"
     }
