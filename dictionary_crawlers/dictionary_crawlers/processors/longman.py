@@ -7,14 +7,13 @@ import logging
 import re
 from collections import defaultdict
 
-from ..services import LongManDefinitionService, LongManCorpusService
+from ..services import LongManDefinitionService
 
 logger = logging.getLogger(__name__)
 
 __all__ = (
     'LongManFamilyWordProcessor',
-    'LongManHeaderProcessor',
-    'LongManCorpusProcessor'
+    'LongManDefinitionProcessor'
 )
 
 
@@ -50,7 +49,7 @@ class LongManFamilyWordProcessor:
         return dict(word_family)
 
 
-class LongManHeaderProcessor:
+class LongManDefinitionProcessor:
 
     def __call__(self, iterable, *args, **kwargs):
         """
@@ -62,16 +61,3 @@ class LongManHeaderProcessor:
         """
 
         return LongManDefinitionService(items=iterable).process()
-
-
-class LongManCorpusProcessor:
-
-    def __call__(self, iterable, *args, **kwargs):
-        """
-
-        :param iterable:
-        :param args:
-        :param kwargs:
-        :return:
-        """
-        return LongManCorpusService(items=iterable).process()

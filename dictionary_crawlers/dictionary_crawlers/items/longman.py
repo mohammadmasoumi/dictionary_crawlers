@@ -20,9 +20,6 @@ class LongManItem(scrapy.Item):
     family_word = scrapy.Field(
         input_processor=processors.LongManFamilyWordProcessor()
     )
-    ldocs = scrapy.Field(
-        input_processor=processors.LongManHeaderProcessor()
-    )
-    corpus = scrapy.Field(
-        input_processor=processors.LongManCorpusProcessor()
+    definition = scrapy.Field(
+        input_processor=processors.LongManDefinitionProcessor()
     )
