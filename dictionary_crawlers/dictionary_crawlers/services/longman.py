@@ -18,15 +18,25 @@ class LongManCorpusService(BaseService):
 
         super(LongManCorpusService, self).__init__(items)
 
-    def process(self, ):
+    def process(self):
         definitions = {}
 
-        for item in self._items:
+        for idx, item in enumerate(self._items):
             iterable_item = item.strip() if isinstance(item, str) else None
 
             if iterable_item:
                 html = etree.HTML(iterable_item)
-                logger.debug(html)
+                title = self._first(html.xpath("//span[@class='title']//text()"))
+                examples = []
+                for element in html.xpath(f"//span[@class='cexa1g{idx + 1} exa']"):
+                    example = self._join(element.xpath("string()"))
+                    # remove the first dot
+                    examples.append(example[1:].strip())
+
+                definitions[title] = examples
+
+        with open('corpus.json', '+w') as file:
+            file.write(ujson.dumps(definitions))
 
         return definitions
 
@@ -207,7 +217,7 @@ class LongManDefinitionService(BaseService):
                     headers['senses'] = senses
                     definitions[headers['homnum']] = headers
 
-        with open('test.json', '+w') as file:
+        with open('ldoc.json', '+w') as file:
             file.write(ujson.dumps(definitions))
 
         return definitions
