@@ -7,13 +7,14 @@ import logging
 import re
 from collections import defaultdict
 
-from ..services import LongManDefinitionService
+from ..services import LongManDefinitionService, LongManCorpusService
 
 logger = logging.getLogger(__name__)
 
 __all__ = (
     'LongManFamilyWordProcessor',
-    'LongManHeaderProcessor'
+    'LongManHeaderProcessor',
+    'LongManCorpusProcessor'
 )
 
 
@@ -51,11 +52,26 @@ class LongManFamilyWordProcessor:
 
 class LongManHeaderProcessor:
 
-    def __call__(self, iterable, **kwargs):
+    def __call__(self, iterable, *args, **kwargs):
         """
-        :param iterable: xpath query result
-        :param kwargs: scrapy context
+
+        :param iterable:
+        :param args:
+        :param kwargs:
         :return:
         """
 
         return LongManDefinitionService(items=iterable).process()
+
+
+class LongManCorpusProcessor:
+
+    def __call__(self, iterable, *args, **kwargs):
+        """
+
+        :param iterable:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        return LongManCorpusService(items=iterable).process()

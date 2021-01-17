@@ -1,7 +1,13 @@
+from abc import abstractmethod
+
 __all__ = ('BaseService',)
 
 
 class BaseService:
+
+    def __init__(self, items):
+        self._items = items
+
     @staticmethod
     def _join(iterables: list, strip=True):
         """
@@ -30,3 +36,11 @@ class BaseService:
         :return:
         """
         return ''.join([base_url, *href])
+
+    @abstractmethod
+    def process(self):
+        """
+
+        :return:
+        """
+        pass

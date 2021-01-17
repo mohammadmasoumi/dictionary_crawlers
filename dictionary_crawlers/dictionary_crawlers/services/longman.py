@@ -1,4 +1,5 @@
 import logging
+
 import ujson
 from lxml import etree
 
@@ -7,6 +8,27 @@ from .base import BaseService
 logger = logging.getLogger(__name__)
 
 LONGMAN_SITE_URL = "https://www.ldoceonline.com"
+
+__all__ = ('LongManCorpusService', 'LongManDefinitionService')
+
+
+class LongManCorpusService(BaseService):
+
+    def __init__(self, items):
+
+        super(LongManCorpusService, self).__init__(items)
+
+    def process(self, ):
+        definitions = {}
+
+        for item in self._items:
+            iterable_item = item.strip() if isinstance(item, str) else None
+
+            if iterable_item:
+                html = etree.HTML(iterable_item)
+                logger.debug(html)
+
+        return definitions
 
 
 class LongManDefinitionService(BaseService):
@@ -20,7 +42,8 @@ class LongManDefinitionService(BaseService):
     }
 
     def __init__(self, items):
-        self._items = items
+
+        super(LongManDefinitionService, self).__init__(items)
 
     def _process_header(self, tree):
         """

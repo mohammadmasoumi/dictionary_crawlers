@@ -23,3 +23,7 @@ class LongManItem(scrapy.Item):
     ldocs = scrapy.Field(
         input_processor=processors.LongManHeaderProcessor()
     )
+    corpus = scrapy.Field(
+        input_processor=processors.LongManCorpusProcessor()
+    )
+
