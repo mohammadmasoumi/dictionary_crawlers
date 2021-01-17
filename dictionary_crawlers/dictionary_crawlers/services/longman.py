@@ -11,7 +11,7 @@ LONGMAN_SITE_URL = "https://www.ldoceonline.com"
 __all__ = ('LongManDefinitionService',)
 
 
-class ProcessHeader(ProcessMixin):
+class HeaderProcessor(ProcessMixin):
     __XPATH_MAPPING__ = {
         'hwd': "//span[@class='HWD']//text()",
         'hyphenation': "//span[@class='HYPHENATION']//text()",
@@ -24,10 +24,11 @@ class ProcessHeader(ProcessMixin):
     def __call__(self, root, *args, **kwargs):
         """
 
-        :param tree:
+        :param root:
+        :param args:
+        :param kwargs:
         :return:
         """
-
         header = {}
         for key, xpath in self.__XPATH_MAPPING__.items():
             value = root.xpath(xpath)
@@ -35,7 +36,54 @@ class ProcessHeader(ProcessMixin):
         return header
 
 
-class ProcessExample(ProcessMixin):
+class SubHeaderProcessor(ProcessMixin):
+    __XPATH_MAPPING__ = {
+        'number': "span[1]//text()",
+        'active': "span[@class='ACTIV']//text()",
+        'geo': "span[@class='GEO']//text()",
+        'syn': "span[@class='SYN']/text()",
+        'main_def': "span[@class='DEF']//text()",
+        'sign_post': "span[@class='SIGNPOST']//text()",
+        'gram': "span[@class='GRAM']//text()",
+        'field': "span[@class='FIELD']//text()",
+    }
+
+    def __call__(self, root, *args, **kwargs):
+        """
+
+        :param root:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        header = {}
+        for key, xpath in self.__XPATH_MAPPING__.items():
+            value = root.xpath(xpath)
+            header.update({key: self._join(value)}) if value else None
+        return header
+
+
+class RefProcessor(ProcessMixin):
+    __XPATH__ = "span[@class='Crossref']/a"
+
+    def __call__(self, root, *args, **kwargs):
+        """
+
+        :param root:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        items = []
+        for cross_ref in root.xpath(self.__XPATH__):
+            items.append({
+                'example': self._join(cross_ref.xpath("@title")),
+                'link': self._join_url(LONGMAN_SITE_URL, cross_ref.xpath("@href"))
+            })
+        return items
+
+
+class ExampleProcessor(ProcessMixin):
     __XPATH__ = "span[@class='EXAMPLE']"
 
     def __call__(self, root, *args, **kwargs):
@@ -56,8 +104,8 @@ class ProcessExample(ProcessMixin):
         return items
 
 
-class ProcessRef(ProcessMixin):
-    __XPATH__ = "span[@class='Crossref']/a"
+class GrammarExampleProcessor(ProcessMixin):
+    __XPATH__ = "span[@class='GramExa']"
 
     def __call__(self, root, *args, **kwargs):
         """
@@ -68,28 +116,7 @@ class ProcessRef(ProcessMixin):
         :return:
         """
         items = []
-        for cross_ref in root.xpath(self.__XPATH__):
-            items.append({
-                'example': self._join(cross_ref.xpath("@title")),
-                'link': self._join_url(LONGMAN_SITE_URL, cross_ref.xpath("@href"))
-            })
-        return items
-
-
-class LongManDefinitionService(ProcessMixin):
-
-    def __init__(self, items):
-
-        super(LongManDefinitionService, self).__init__(items)
-
-    def _process_grammar_example(self, tree):
-        """
-
-        :param tree:
-        :return:
-        """
-        items = []
-        for grammar_example in tree.xpath("span[@class='GramExa']"):
+        for grammar_example in root.xpath(self.__XPATH__):
             items.append({
                 'example': self._join(grammar_example.xpath("span[1]//text()")),
                 'audio': self._first(grammar_example.xpath("span[2]//@data-src-mp3")),
@@ -97,48 +124,35 @@ class LongManDefinitionService(ProcessMixin):
             })
         return items
 
-    def _process_collocation_example(self, tree):
+
+class CollocationExampleProcessor(ProcessMixin):
+    __XPATH__ = "span[@class='ColloExa']"
+
+    def __call__(self, root, *args, **kwargs):
         """
 
-        :param tree:
+        :param root:
+        :param args:
+        :param kwargs:
         :return:
         """
         items = []
-        for collocation_example in tree.xpath("span[@class='ColloExa']"):
+        for collocation_example in root.xpath(self.__XPATH__):
             items.append({
                 'example': self._join(collocation_example.xpath("span[1]//text()")),
                 'audio': self._first(collocation_example.xpath("span[2]//@data-src-mp3"))
             })
         return items
 
-    def _process_sense(self, tree):
-        """
 
-        :param tree:
-        :return:
-        """
-        return {
-            'sense_num': self._join(tree.xpath("span[1]//text()")),
-            'sign_post': self._join(tree.xpath("span[@class='SIGNPOST']//text()")),
-            'gram': self._join(tree.xpath("span[@class='GRAM']//text()")),
-            'def': self._join(tree.xpath("span[@class='DEF']//text()")),
-            'field': self._join(tree.xpath("span[@class='FIELD']//text()")),
-            'active': self._join(tree.xpath("span[@class='ACTIV']//text()")),
-        }
+class LongManDefinitionService(ProcessMixin):
 
-    def _process_sub_sense(self, tree):
-        """
+    @staticmethod
+    def __extract_header__(root):
+        return HeaderProcessor()(root)
 
-        :param tree:
-        :return:
-        """
-        return {
-            'sub_sense_num': self._join(tree.xpath("span[1]//text()")),
-            'active': self._join(tree.xpath("span[@class='ACTIV']//text()")),
-            'geo': self._join(tree.xpath("span[@class='GEO']//text()")),
-            'syn': self._join(tree.xpath("span[@class='SYN']/text()")),
-            'main_definition': self._join(tree.xpath("span[@class='DEF']//text()")),
-        }
+    @staticmethod
+    def
 
     def __extract_definition__(self, root):
         """
@@ -160,17 +174,22 @@ class LongManDefinitionService(ProcessMixin):
 
         return
 
-    def process(self):
+    def process(self, iterable):
+        """
+
+        :param iterable:
+        :return:
+        """
         definitions = {}
 
-        for idx, element in enumerate(self._items):
+        for idx, element in enumerate(iterable):
             iterable_item = element.strip() if isinstance(element, str) else None
 
             if iterable_item:
                 root = etree.HTML(iterable_item)
 
                 for html in root.xpath("//span[@class='ldoceEntry Entry']"):
-                    headers = self._process_header(html)
+                    headers = self.__extract_header__(html)
 
                     if headers:
 

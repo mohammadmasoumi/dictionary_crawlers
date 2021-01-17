@@ -3,9 +3,6 @@ __all__ = ('ProcessMixin',)
 
 class ProcessMixin:
 
-    def __init__(self, items):
-        self._items = items
-
     @staticmethod
     def _join(iterables: list, strip=True):
         """
