@@ -145,34 +145,82 @@ class CollocationExampleProcessor(ProcessMixin):
         return items
 
 
-class LongManDefinitionService(ProcessMixin):
+class IdocProcessor:
+    __EXAMPLE_ITEMS__ = {
+        "header": SubHeaderProcessor(),
+        "refs": RefProcessor(),
+        "examples": ExampleProcessor(),
+        "grammar_examples": GrammarExampleProcessor(),
+        "collocation_examples": CollocationExampleProcessor()
+    }
+
+    def __init__(self, root):
+        """
+
+        :param root:
+        """
+        self.root = root
 
     @staticmethod
     def __extract_header__(root):
         return HeaderProcessor()(root)
 
     @staticmethod
-    def
+    def __extract_sense(root):
+        definition = {}
+        for key, processor in IdocProcessor.__EXAMPLE_ITEMS__.items():
+            processed_items = processor(root)
+            definition.update({key: processed_items}) if processed_items else None
+        return definition
 
-    def __extract_definition__(self, root):
+    def process(self):
         """
 
-        :param root:
         :return:
         """
-        definition = {}
+        definitions = []
 
-        refs = self._process_refs(tree=root)
-        examples = self._process_example(tree=root)
-        collocation_examples = self._process_collocation_example(tree=root)
-        grammar_examples = self._process_grammar_example(tree=root)
+        for html in self.root.xpath("//span[@class='ldoceEntry Entry']"):
+            headers = self.__extract_header__(html)
 
-        definition.update({'refs': refs}) if refs else None
-        definition.update({'examples': examples}) if examples else None
-        definition.update({'collocation_examples': collocation_examples}) if collocation_examples else None
-        definition.update({'grammar_examples': grammar_examples}) if grammar_examples else None
+            if headers:
+                senses = []
+                for sense in html.xpath("//span[@class='Sense']"):
+                    sense_item = self.__extract_sense(sense)
 
-        return
+                    sub_senses = []
+                    for sub_sense in sense.xpath("span[@class='Subsense']"):
+                        sub_senses.append(self.__extract_sense(sub_sense))
+
+                    sense_item.update({'sub_senses': sub_senses}) if sub_senses else None
+                    senses.append(sense_item)
+
+                headers['senses'] = senses
+                definitions.append(headers)
+
+        return definitions
+
+
+class CorpusProcessor(ProcessMixin):
+
+    def __init__(self, root):
+        self.root = root
+
+    def process(self):
+        corpus = {}
+
+        for html in self.root.xpath(f"//span[contains(@class, 'exaGroup')]"):
+            title = self._first(html.xpath("//span[@class='title']//text()"))
+            examples = []
+            for elem in html.xpath(f"//span[contains(@class, 'cexa1g')]"):
+                example = self._join(elem.xpath("string()"))
+                # remove the first dot
+                examples.append(example[1:].strip())
+
+            corpus[title] = examples
+
+
+class LongManDefinitionService(ProcessMixin):
 
     def process(self, iterable):
         """
@@ -187,63 +235,6 @@ class LongManDefinitionService(ProcessMixin):
 
             if iterable_item:
                 root = etree.HTML(iterable_item)
-
-                for html in root.xpath("//span[@class='ldoceEntry Entry']"):
-                    headers = self.__extract_header__(html)
-
-                    if headers:
-
-                        # definition
-                        senses = []
-                        for sense in html.xpath("//span[@class='Sense']"):
-                            process_sense = self._process_sense(tree=sense)
-
-                            sense_refs = self._process_refs(tree=sense)
-                            sense_examples = self._process_example(tree=sense)
-                            sense_collocation_examples = self._process_collocation_example(tree=sense)
-                            sense_grammar_examples = self._process_grammar_example(tree=sense)
-
-                            process_sense.update({'sense_refs': sense_refs}) if sense_refs else None
-                            process_sense.update({'sense_examples': sense_examples}) if sense_examples else None
-                            process_sense.update({'sense_collocation_examples': sense_collocation_examples}) \
-                                if sense_collocation_examples else None
-                            process_sense.update({'sense_grammar_examples': sense_grammar_examples}) if \
-                                sense_grammar_examples else None
-
-                            process_sense.update({'sub_senses': []})
-
-                            for sub_sense in sense.xpath("span[@class='Subsense']"):
-                                process_sub_sense = self._process_sub_sense(tree=sub_sense)
-
-                                sub_refs = self._process_refs(tree=sub_sense)
-                                sub_examples = self._process_example(tree=sub_sense)
-                                sub_collocation_examples = self._process_collocation_example(tree=sub_sense)
-                                sub_grammar_examples = self._process_grammar_example(tree=sub_sense)
-
-                                process_sub_sense.update({'sub_refs': sub_refs}) if sub_refs else None
-                                process_sub_sense.update({'sub_examples': sub_examples}) if sub_examples else None
-                                process_sub_sense.update({'sub_collocation_examples': sub_collocation_examples}) \
-                                    if sub_collocation_examples else None
-                                process_sub_sense.update({'sub_grammar_examples': sub_grammar_examples}) \
-                                    if sub_grammar_examples else None
-
-                                process_sense['sub_senses'].append(process_sub_sense)
-
-                            senses.append(process_sense)
-                        headers['senses'] = senses
-                        definitions[headers['homnum']] = headers
-
-                corpus = {}
-                for html in root.xpath(f"//span[@class='exaGroup cexa{idx + 1} exaGroup']"):
-                    title = self._first(html.xpath("//span[@class='title']//text()"))
-                    examples = []
-                    for elem in html.xpath(f"//span[@class='cexa1g{idx + 1} exa']"):
-                        example = self._join(elem.xpath("string()"))
-                        # remove the first dot
-                        examples.append(example[1:].strip())
-
-                    corpus[title] = examples
-
-                definitions.update(corpus=corpus)
+                idocs = IdocProcessor(root).process()
 
         return definitions
