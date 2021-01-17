@@ -26,4 +26,3 @@ class LongManItem(scrapy.Item):
     corpus = scrapy.Field(
         input_processor=processors.LongManCorpusProcessor()
     )
-
